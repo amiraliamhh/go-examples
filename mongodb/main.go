@@ -12,6 +12,13 @@ import (
 type Person struct {
 	FirstName string
 	LastName  string
+	Age       int
+}
+
+func logOnFail(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -24,19 +31,38 @@ func main() {
 
 	collection := session.DB("mydb").C("mycollection")
 
-	// create new record
-	err = collection.Insert(&Person{
+	var person = Person{
 		FirstName: "Jon",
 		LastName:  "Doe",
-	})
-	if err != nil {
-		panic(err)
+		Age:       20,
 	}
 
+	// remove all records before inserting
+	info, err := collection.RemoveAll(nil)
+	logOnFail(err)
+	fmt.Printf("data is removed, info: %+v\n", info)
+
+	// create new record
+	err = collection.Insert(&person)
+	logOnFail(err)
+
+	// query records
 	result := Person{}
 	err = collection.Find(bson.M{"firstname": "Jon"}).One(&result)
-	if err != nil {
-		log.Fatal(err)
+	logOnFail(err)
+	fmt.Printf("data is inserted: %+v\n", result)
+
+	// update
+	newPerson := Person{
+		FirstName: "Joe",
+		LastName:  "Smith",
+		Age:       33,
 	}
-	fmt.Println(result.LastName)
+	err = collection.Update(person, newPerson)
+	logOnFail(err)
+
+	err = collection.Find(bson.M{"firstname": "Joe"}).One(&result)
+	logOnFail(err)
+	fmt.Printf("data is updated: %+v\n", result)
+
 }
