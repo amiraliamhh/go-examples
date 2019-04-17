@@ -1,0 +1,1 @@
+module github.com/amiraliamhh/go-examples/vugutest

@@ -67,13 +67,13 @@ func main() {
 	// bulk insert
 	p1 := Person{
 		FirstName: "p1 name",
-		LastName: "p1 last name",
-		Age: 19,
+		LastName:  "p1 last name",
+		Age:       19,
 	}
 	p2 := Person{
 		FirstName: "p2 name",
-		LastName: "p2 last name",
-		Age: 21,
+		LastName:  "p2 last name",
+		Age:       21,
 	}
 	err = collection.Insert(&p1, &p2)
 	logOnFail(err)
